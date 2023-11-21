@@ -13,18 +13,57 @@ import com.excellence.spring_boot_library_management_system.dto.Admin;
 import com.excellence.spring_boot_library_management_system.dto.ResponseStructure;
 import com.excellence.spring_boot_library_management_system.service.AdminService;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.ExampleObject;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpSession;
 
+@SuppressWarnings("serial")
 @RestController
-public class AdminController {
+public class AdminController extends HttpServlet {
 
 	@Autowired
-	private AdminService adminService;
+	HttpServletRequest httpServletRequest;
 
 	@Autowired
 	HttpSession httpSession;
 
+	@Autowired
+	AdminService adminService;
+
 	@PostMapping(value = "/saveAdmin")
+	@Operation(description = "save Admin Details", responses = {
+			@ApiResponse(responseCode = "200", description = "Successfully Admin Data Added", content = @Content(mediaType = "application/json", examples = {
+					@ExampleObject(
+
+							value = "{\"code\":200,\"Status\":ok!,\"Message\":\"Successfully Data Added\"}"
+
+					)
+
+			})),
+			@ApiResponse(responseCode = "400", description = "Bad Request!", content = @Content(mediaType = "application/json", examples = {
+					@ExampleObject(
+
+							value = "{\"code\":400,\"Status\":Bad Request!,\"Message\":\"Bad Request!\"}"
+
+					)
+
+			})),
+
+			@ApiResponse(responseCode = "500", description = "Internel Server Error!", content = @Content(mediaType = "application/json", examples = {
+					@ExampleObject(
+
+							value = "{\"code\":500,\"Status\":Internel Server Error!,\"Message\":\"Internel Server Error!\"}"
+
+					)
+
+			}))
+
+	})
+
 	public ResponseStructure<Admin> saveAdmin(@RequestBody Admin admin) {
 		return adminService.saveAdmin(admin);
 	}
